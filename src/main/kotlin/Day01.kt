@@ -9,7 +9,7 @@ fun main() {
     Day01().solve()
 }
 
-class Day01(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("", inputType = inputType) {
+class Day01(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("Trebuchet?!", inputType = inputType) {
 
     private val data = input.splitLines()
     private val numbers = mapOf(
@@ -30,7 +30,7 @@ class Day01(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("", inputType = inputType)
 
         return calculateCalibrationValue(tens, ones)
     }
-    
+
     override fun part2(): Int {
         val patternForTens = numbers.keys.joinToString("|") + "|\\d"
         val patternForOnes = numbers.keys.joinToString("|") { it.reversed() } + "|\\d"
