@@ -3,7 +3,7 @@ package utils.matrix
 import utils.toMatrix
 
 data class Matrix<T>(val matrix: List<List<T>>) {
-    
+
     constructor(rows: Int, cols: Int, element: () -> T) : this(List(rows * cols) { element.invoke() }.chunked(cols))
 
     val numberOfRows = matrix.size
@@ -18,6 +18,14 @@ data class Matrix<T>(val matrix: List<List<T>>) {
         (0 until numberOfRows).flatMap { row ->
             (0 until numberOfCols).map { col ->
                 if (matrix[row][col] == element) yield(Position(row, col))
+            }
+        }
+    }
+
+    fun search2(element: (p: Position) -> Boolean) = sequence {
+        (0 until numberOfRows).flatMap { row ->
+            (0 until numberOfCols).map { col ->
+                if (element.invoke(Position(row, col))) yield(Position(row, col))
             }
         }
     }
@@ -41,19 +49,19 @@ data class Matrix<T>(val matrix: List<List<T>>) {
     fun rotateClockWise() = this.transpose().flipVertical()
 
     fun rotateCounterClockWise() = this.transpose().flipHorizontal()
-    
+
     fun <T> insertAt(position: Position, element: T): Matrix<T> {
-        return matrix.mapIndexed { rowIndex, rows -> 
-            rows.mapIndexed { colIndex, cell -> 
-                if(rowIndex == position.row && colIndex == position.col) element else cell as T
+        return matrix.mapIndexed { rowIndex, rows ->
+            rows.mapIndexed { colIndex, cell ->
+                if (rowIndex == position.row && colIndex == position.col) element else cell as T
             }
         }.toMatrix()
     }
 
-    fun <T> insertAt(positionMap: Map<Position,T>): Matrix<T> {
+    fun <T> insertAt(positionMap: Map<Position, T>): Matrix<T> {
         return matrix.mapIndexed { row, rows ->
             rows.mapIndexed { col, cell ->
-                if(positionMap.containsKey(Position(row, col))) positionMap[Position(row, col)] as T else cell as T
+                if (positionMap.containsKey(Position(row, col))) positionMap[Position(row, col)] as T else cell as T
             }
         }.toMatrix()
     }
