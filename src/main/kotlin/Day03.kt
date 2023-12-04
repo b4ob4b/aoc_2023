@@ -40,7 +40,7 @@ class Day03(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("Gear Ratios", inputType =
         return numbers.sum()
     }
 
-    override fun part2(): Any? {
+    override fun part2(): Int {
         val gearPositions = engine
             .search { position -> matchesGearAt(position) }
             .filter { engine[it].isNotEmpty() }
