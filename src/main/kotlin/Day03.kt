@@ -43,10 +43,9 @@ class Day03(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("Gear Ratios", inputType =
     override fun part2(): Int {
         val gearPositions = engine
             .search { position -> matchesGearAt(position) }
-            .filter { engine[it].isNotEmpty() }
             .toList()
 
-        val gears = gearPositions.map { it to mutableSetOf<Position>() }.toMap()
+        val gears = gearPositions.associateWith { mutableSetOf<Position>() }
 
         for (gearPosition in gearPositions) {
             val queue = ArrayDeque<Position>()
