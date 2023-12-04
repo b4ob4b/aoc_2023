@@ -1,5 +1,6 @@
 package utils.matrix
 
+import utils.print
 import utils.toMatrix
 
 data class Matrix<T>(val matrix: List<List<T>>) {
@@ -66,6 +67,24 @@ data class Matrix<T>(val matrix: List<List<T>>) {
                 if (positionMap.containsKey(Position(row, col))) positionMap[Position(row, col)] as T else cell as T
             }
         }.toMatrix()
+    }
+
+    fun highlight(highlight: (position: Position) -> Boolean) {
+        val highlightColor = "\u001b[" + 43 + "m"
+        val defaultColor = "\u001b[" + 0 + "m"
+        matrix
+            .mapIndexed { row, rows ->
+                rows.mapIndexed { col, cell ->
+                    val position = Position(row, col)
+                    if (highlight(position)) {
+                        "$highlightColor$cell$defaultColor"
+                    } else {
+                        cell.toString()
+                    }
+                }
+            }
+            .toMatrix()
+            .print()
     }
 
     override fun toString() = matrix
