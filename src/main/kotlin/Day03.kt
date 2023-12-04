@@ -1,4 +1,5 @@
 import utils.*
+import utils.matrix.Matrix
 import utils.matrix.Position
 
 fun main() {
@@ -6,171 +7,89 @@ fun main() {
     Day03().solve()
 }
 
-class Day03(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("", inputType = inputType) {
+class Day03(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("Gear Ratios", inputType = inputType) {
 
-    val data = input.splitLines()
+    private val engine = input.splitLines()
+        .map { it.split("") }
+        .toMatrix()
 
-    override fun part1(): Any? {
-        val m = data
-            .map { it.split("") }.toMatrix()
-//        [, ., 4, 2, 6, 9, 8, 5, 0, 7, 1, 3, &, +, -, #, @, $, *, /, %, =]
-//        [, 4, 6, 7, ., 1, *, 3, 5, #, +, 8, 9, 2, $]
+    private val matchesPartAt = fun(position: Position) = Regex("\\d|\\.|^$").matches(engine[position]).not()
+    private val matchesGearAt = fun(position: Position) = Regex("\\*").matches(engine[position])
+    private val matchesNumberAt = fun(position: Position) = Regex("\\d").matches(engine[position])
 
-        val symbols = m.search2 { Regex("\\d|\\.").matches(m[it]).not() }
-            .filter { m[it].isNotEmpty() }
-            .toList()
+    override fun part1(): Int {
 
-        val numbersWithN = mutableSetOf<Position>()
-
-        for (s in symbols) {
-            val queue = ArrayDeque<Position>()
-            queue.add(s)
-            val seen = mutableSetOf<Position>()
-            while (queue.isNotEmpty()) {
-                val p = queue.removeFirst()
-                if (p in seen) continue
-                seen.add(p)
-                p.get8Neighbours().forEach {
-                    if (it.row in m.rowIndices && it.col in m.colIndices) {
-                        if (Regex("\\d").matches(m[it])) {
-                            numbersWithN.add(it)
-                            queue.add(it)
-                        }
-                    }
-                }
-            }
-
-        }
-
-        val mm = mutableListOf<String>()
-
-        for (r in m.rowIndices) {
-            var n = ""
-            for (c in m.colIndices) {
-                val p = Position(r, c)
-                if (p in numbersWithN) {
-                    n = "$n${m[p]}"
+        val numbers = mutableListOf<Int>()
+        for (row in engine.rowIndices) {
+            var number = ""
+            var hasSymbol = false
+            for (col in engine.colIndices) {
+                val p = Position(row, col)
+                if (matchesNumberAt(p)) {
+                    hasSymbol = hasSymbol || p.get8Neighbours().filter { it in engine }.any { matchesPartAt(it) }
+                    number = "$number${engine[p]}"
                 } else {
-                    mm.add(n)
-                    n = ""
-
+                    if (hasSymbol && number.isNotEmpty()) {
+                        numbers.add(number.toInt())
+                    }
+                    number = ""
+                    hasSymbol = false
                 }
-
             }
         }
-        return mm
-            .filter { it.isNotEmpty() }
-            .map { it.toInt() }
-            .sum()
-
-//        332970
-        return "not yet implement"
+        return numbers.sum()
     }
 
     override fun part2(): Any? {
-        val m = data
-            .map { it.split("") }.toMatrix()
-//        [, ., 4, 2, 6, 9, 8, 5, 0, 7, 1, 3, &, +, -, #, @, $, *, /, %, =]
-//        [, 4, 6, 7, ., 1, *, 3, 5, #, +, 8, 9, 2, $]
-
-        val symbols = m.search2 { Regex("""\*""").matches(m[it]) }
-            .filter { m[it].isNotEmpty() }
+        val gearPositions = engine
+            .search { position -> matchesGearAt(position) }
+            .filter { engine[it].isNotEmpty() }
             .toList()
 
-        val numbersWithN = mutableSetOf<Position>()
+        val gears = gearPositions.map { it to mutableSetOf<Position>() }.toMap()
 
-        for (s in symbols) {
+        for (gearPosition in gearPositions) {
             val queue = ArrayDeque<Position>()
-            queue.add(s)
+            queue.add(gearPosition)
             val seen = mutableSetOf<Position>()
             while (queue.isNotEmpty()) {
-                val p = queue.removeFirst()
-                if (p in seen) continue
-                seen.add(p)
-                p.get8Neighbours().forEach {
-                    if (it.row in m.rowIndices && it.col in m.colIndices) {
-                        if (Regex("\\d").matches(m[it])) {
-                            numbersWithN.add(it)
-                            queue.add(it)
+                val position = queue.removeFirst()
+                if (position in seen) continue
+                seen.add(position)
+                position.get8Neighbours().forEach { neighbour ->
+                    if (neighbour in engine) {
+                        if (matchesNumberAt(neighbour)) {
+                            gears[gearPosition]?.add(neighbour)
+                            queue.add(neighbour)
                         }
                     }
                 }
             }
         }
-        "h".print()
-        numbersWithN.first().print()
 
-        val np = mutableSetOf<MutableSet<Position>>()
 
-        for (r in m.rowIndices) {
-            var nn = mutableSetOf<Position>()
-            for (c in m.colIndices) {
-                val p = Position(r, c)
-                if (p in numbersWithN) {
-                    nn.add(p)
+        return gears
+            .map { engine.findNumbers(it.value) }
+            .filter { it.size == 2 }
+            .sumOf { it.product() }
+    }
+
+    private fun Matrix<String>.findNumbers(positions: Set<Position>): List<Int> {
+        val numbers = mutableListOf<Int>()
+        for (r in rowIndices) {
+            var number = ""
+            for (c in colIndices) {
+                val position = Position(r, c)
+                number = if (position in positions) {
+                    "$number${this[position]}"
                 } else {
-                    if (nn.isNotEmpty()) {
-                        nn.print()
-                        np.add(nn)
-                        np.print()
-                        nn = mutableSetOf<Position>()
+                    if (number.isNotEmpty()) {
+                        numbers.add(number.toInt())
                     }
-                }
-
-            }
-        }
-
-        np.toList().print()
-
-        val ff = mutableSetOf<MutableSet<MutableSet<Position>>>()
-
-        symbols.first().print()
-        symbols.forEach { ast ->
-            var count = 0
-            val found = mutableSetOf<MutableSet<Position>>()
-            np.distinct().forEach {
-                val i = ast.get8Neighbours().toSet().intersect(it).isNotEmpty()
-                if (i) {
-                    count = count + 1
-                    found.add(it)
+                    ""
                 }
             }
-
-            if (count == 2) {
-                ff.add(found)
-            }
         }
-        ff.toList().first().print()
-        return ff.map {
-            val numbers = mutableListOf<String>()
-            for (r in m.rowIndices) {
-                var n = ""
-                for (c in m.colIndices) {
-                    val p = Position(r, c)
-                    if (p in it.flatten()) {
-                        n = "$n${m[p]}"
-                    } else {
-                        numbers.add(n)
-                        n = ""
-                    }
-
-                }
-            }
-            numbers
-        }
-            .filter { it.isNotEmpty() }
-            .map {
-                it.filter { it.isNotEmpty() }
-//                .print()
-                    .map { it.toInt() }.product()
-            }
-            .sum()
-
-
-
-        return 1
-
-//        332970
-        return "not yet implement"
+        return numbers.toList()
     }
 }

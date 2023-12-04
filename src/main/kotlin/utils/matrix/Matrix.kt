@@ -14,6 +14,8 @@ data class Matrix<T>(val matrix: List<List<T>>) {
 
     operator fun get(point: Position) = matrix[point.row][point.col]
 
+    operator fun contains(position: Position) = position.row in rowIndices && position.col in colIndices
+
     fun <T> search(element: T) = sequence {
         (0 until numberOfRows).flatMap { row ->
             (0 until numberOfCols).map { col ->
@@ -22,7 +24,7 @@ data class Matrix<T>(val matrix: List<List<T>>) {
         }
     }
 
-    fun search2(element: (p: Position) -> Boolean) = sequence {
+    fun search(element: (p: Position) -> Boolean) = sequence {
         (0 until numberOfRows).flatMap { row ->
             (0 until numberOfCols).map { col ->
                 if (element.invoke(Position(row, col))) yield(Position(row, col))

@@ -37,10 +37,10 @@ data class Position(val row: Int, val col: Int) {
     }
 
     fun get4Neighbours(): Sequence<Position> = sequence {
-        Direction4.values().forEach { yield(this@Position.moveTo(it)) }
+        Direction4.entries.forEach { yield(this@Position.moveTo(it)) }
     }
 
     fun get8Neighbours(): Sequence<Position> = sequence {
-        Direction8.values().forEach { yield(this@Position.moveTo8(it)) }
+        Direction8.entries.forEach { yield(this@Position.moveTo8(it)) }
     }
 }

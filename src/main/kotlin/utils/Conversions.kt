@@ -34,7 +34,7 @@ fun String.splitLinesToInt() = split("\n").map(String::toInt)
 
 fun String.binaryToDecimal() = Integer.parseInt(this, 2)
 
-fun String.extractInts(separator: String = ",") = this.split(separator).map { it.toInt() }
+fun String.extractInts(separator: String = ",") = this.split(separator).filter { it.isNotEmpty() }.map { it.toInt() }
 
 fun String.toGrid(separator: String = "", filterBlanks: Boolean = true) =
     this.splitLines().map { line ->
@@ -51,4 +51,4 @@ fun <T> String.toGrid(separator: String = "", mapCell: ((String) -> T)): List<Li
     this.toGrid(separator).map { it.map(mapCell) }
 
 fun String.toPosition3D() = this.split(",").map { it.toInt() }
-    .let { (x,y,z) -> Position3D(x,y,z) }
+    .let { (x, y, z) -> Position3D(x, y, z) }
