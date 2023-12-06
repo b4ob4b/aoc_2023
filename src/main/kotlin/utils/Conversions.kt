@@ -10,6 +10,9 @@ fun main() {
     "10100".binaryToDecimal().print()
     // 20
 
+    "Abc: 1,2,3,4".extractInts().print()
+    // [1, 2, 3, 4]
+
     "1,2,3,4".extractInts().print()
     // [1, 2, 3, 4]
 
@@ -34,7 +37,14 @@ fun String.splitLinesToInt() = split("\n").map(String::toInt)
 
 fun String.binaryToDecimal() = Integer.parseInt(this, 2)
 
-fun String.extractInts(separator: String = ",") = this.split(separator).filter { it.isNotEmpty() }.map { it.toInt() }
+fun String.extractInts(separator: String) = this.extractInts(separator.toRegex())
+fun String.extractInts(separator: Regex = ",".toRegex(), removeNonNumbers: Boolean = true) = this
+    .replace("[a-zA-Z]|:".toRegex(), "")
+    .trimStart()
+    .trimEnd()
+    .split(separator)
+    .filter { it.isNotEmpty() }
+    .map { it.toInt() }
 
 fun String.toGrid(separator: String = "", filterBlanks: Boolean = true) =
     this.splitLines().map { line ->

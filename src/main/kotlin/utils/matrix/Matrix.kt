@@ -53,38 +53,38 @@ data class Matrix<T>(val matrix: List<List<T>>) {
 
     fun rotateCounterClockWise() = this.transpose().flipHorizontal()
 
-    fun <T> insertAt(position: Position, element: T): Matrix<T> {
-        return matrix.mapIndexed { rowIndex, rows ->
-            rows.mapIndexed { colIndex, cell ->
-                if (rowIndex == position.row && colIndex == position.col) element else cell as T
-            }
-        }.toMatrix()
-    }
+    fun <T> insertAt(position: Position, element: T) = this
+        .map { pos, cell: T ->
+            if (pos == position) element else cell
+        }
 
-    fun <T> insertAt(positionMap: Map<Position, T>): Matrix<T> {
-        return matrix.mapIndexed { row, rows ->
-            rows.mapIndexed { col, cell ->
-                if (positionMap.containsKey(Position(row, col))) positionMap[Position(row, col)] as T else cell as T
-            }
-        }.toMatrix()
-    }
+    fun <T> insertAt(positionMap: Map<Position, T>) = this
+        .map { position, cell: T ->
+            if (positionMap.containsKey(position)) positionMap[position]!! else cell
+        }
 
     fun highlight(highlight: (position: Position) -> Boolean) {
         val highlightColor = "\u001b[" + 43 + "m"
         val defaultColor = "\u001b[" + 0 + "m"
-        matrix
+        this
+            .map { position, cell: T ->
+                if (highlight(position)) {
+                    "$highlightColor$cell$defaultColor"
+                } else {
+                    cell.toString()
+                }
+            }
+            .print()
+    }
+
+    fun <T, R> map(it: (position: Position, cell: T) -> R): Matrix<R> {
+        return matrix
             .mapIndexed { row, rows ->
                 rows.mapIndexed { col, cell ->
                     val position = Position(row, col)
-                    if (highlight(position)) {
-                        "$highlightColor$cell$defaultColor"
-                    } else {
-                        cell.toString()
-                    }
+                    it(position, cell as T)
                 }
-            }
-            .toMatrix()
-            .print()
+            }.toMatrix()
     }
 
     override fun toString() = matrix
