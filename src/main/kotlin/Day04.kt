@@ -1,4 +1,7 @@
-import utils.*
+import utils.Day
+import utils.IO
+import utils.extractToList
+import utils.splitLines
 
 fun main() {
     Day04(IO.TYPE.SAMPLE).test(13, 30)
@@ -9,7 +12,7 @@ class Day04(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("Scratchcards", inputType 
 
     private val wins = input.splitLines()
         .map { it.split(": |\\|".toRegex()).drop(1) }
-        .map { game -> game.map { it.extractInts(" ") } }
+        .map { game -> game.map { it.extractToList("\\d+") } }
         .map { it[0].toSet() intersect it[1].toSet() }
         .map { it.size }
 

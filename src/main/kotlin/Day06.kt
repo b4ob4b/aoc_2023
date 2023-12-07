@@ -11,7 +11,7 @@ class Day06(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("Wait For It", inputType =
 
     private val races = input.splitLines()
         .map {
-            it.extractInts(" +".toRegex())
+            it.extractInts()
         }.let { (times, distances) ->
             times.zip(distances)
         }.map { Race(it.first, it.second.toLong()) }

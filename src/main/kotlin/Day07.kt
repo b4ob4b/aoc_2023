@@ -1,6 +1,6 @@
 import utils.Day
 import utils.IO
-import utils.extractLettersAndDigits
+import utils.extractToList
 import utils.splitLines
 
 fun main() {
@@ -13,7 +13,7 @@ class Day07(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("Camel Cards", inputType =
     private val handsData = input.splitLines()
         .map { it.split(" ") }
         .map { (cards, strength) ->
-            cards.extractLettersAndDigits() to strength.toInt()
+            cards.extractToList("\\w") to strength.toInt()
         }
 
     override fun part1() = handsData
