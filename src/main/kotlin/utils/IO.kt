@@ -50,7 +50,12 @@ object IO {
             }
             
             class Day$formattedDay(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("", inputType = inputType) {
+            
+                private val data = input.splitLines()
+                
                 override fun part1(): Any? {
+                    data
+                        .print()
                     return "not yet implement"
                 }
 

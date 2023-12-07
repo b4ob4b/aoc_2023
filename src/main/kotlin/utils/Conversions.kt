@@ -46,6 +46,8 @@ fun String.extractInts(separator: Regex = ",".toRegex(), removeNonNumbers: Boole
     .filter { it.isNotEmpty() }
     .map { it.toInt() }
 
+fun String.extractLettersAndDigits() = Regex("\\w").findAll(this).map { it.value }.toList()
+
 fun String.toGrid(separator: String = "", filterBlanks: Boolean = true) =
     this.splitLines().map { line ->
         line.split(separator).let {
