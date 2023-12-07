@@ -4,7 +4,7 @@ import utils.extractToList
 import utils.splitLines
 
 fun main() {
-    Day07(IO.TYPE.SAMPLE).test(6440L, 5905L)
+    Day07(IO.TYPE.SAMPLE).test(6440, 5905)
     Day07().solve()
 }
 
@@ -32,12 +32,15 @@ class Day07(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("Camel Cards", inputType =
 
     private fun List<Hand>.calculateTotalWinnings() = this
         .mapIndexed { rank, hand ->
-            (rank + 1) * hand.strength.toLong()
+            (rank + 1) * hand.strength
         }.sum()
 
     abstract class Hand(open val cards: List<String>, open val strength: Int) : Comparable<Hand> {
         abstract val cardValues: Map<String, Int>
-        fun String.calculateCardValues() = this.split(", ").reversed().mapIndexed { index, s -> s to index + 1 }.toMap()
+        fun String.calculateCardValues() = this.split(", ")
+            .reversed()
+            .mapIndexed { index, s -> s to index + 1 }.toMap()
+        
         fun Map<String, Int>.hasTwoPairs() = this.values
             .groupingBy { it }
             .eachCount()
