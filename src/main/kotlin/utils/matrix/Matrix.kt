@@ -53,22 +53,22 @@ data class Matrix<T>(val matrix: List<List<T>>) {
 
     fun rotateCounterClockWise() = this.transpose().flipHorizontal()
 
-    fun <T> insertAt(position: Position, element: T) = this
+    fun insertAt(position: Position, element: T) = this
         .map { pos, cell: T ->
             if (pos == position) element else cell
         }
 
-    fun <T> insertAt(positionMap: Map<Position, T>) = this
+    fun insertAt(positionMap: Map<Position, T>) = this
         .map { position, cell: T ->
             if (positionMap.containsKey(position)) positionMap[position]!! else cell
         }
 
-    fun highlight(highlight: (position: Position) -> Boolean) {
+    fun highlight(highlight: (position: Position, cell: T) -> Boolean) {
         val highlightColor = "\u001b[" + 43 + "m"
         val defaultColor = "\u001b[" + 0 + "m"
         this
-            .map { position, cell: T ->
-                if (highlight(position)) {
+            .map { position, cell ->
+                if (highlight(position, cell)) {
                     "$highlightColor$cell$defaultColor"
                 } else {
                     cell.toString()
@@ -77,12 +77,12 @@ data class Matrix<T>(val matrix: List<List<T>>) {
             .print()
     }
 
-    fun <T, R> map(it: (position: Position, cell: T) -> R): Matrix<R> {
+    fun <R> map(it: (position: Position, cell: T) -> R): Matrix<R> {
         return matrix
             .mapIndexed { row, rows ->
                 rows.mapIndexed { col, cell ->
                     val position = Position(row, col)
-                    it(position, cell as T)
+                    it(position, cell)
                 }
             }.toMatrix()
     }
