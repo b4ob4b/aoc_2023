@@ -1,7 +1,4 @@
-import utils.Day
-import utils.IO
-import utils.extractToList
-import utils.splitLines
+import utils.*
 
 fun main() {
     Day08(IO.TYPE.SAMPLE).test(6)
@@ -12,7 +9,7 @@ fun main() {
 class Day08(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("Haunted Wasteland", inputType = inputType) {
 
     private val data = input.split("\n\n")
-    private val instructions = data.first().extractToList("\\w").let { generateSequence(it) { it }.flatten() }
+    private val instructions = data.first().extractToList("\\w").toInfiniteSequence()
     private val positionMap = data
         .drop(1).single().splitLines()
         .associate {
@@ -27,7 +24,7 @@ class Day08(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("Haunted Wasteland", input
         .map { startingPoint ->
             navigateTheNetwork(startingPoint, "Z")
         }
-        .findSmallestMultiple()
+        .lcm()
 
 
     private fun navigateTheNetwork(start: String, goal: String): Int {
@@ -40,13 +37,5 @@ class Day08(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("Haunted Wasteland", input
             }
             position.endsWith(goal).not()
         }.count() + 1
-    }
-
-    private fun List<Int>.findSmallestMultiple(): Long {
-        val maxNumber = this.maxOrNull() ?: return -1
-        return generateSequence(maxNumber.toLong()) { it + maxNumber }
-            .first { multiple ->
-                this.all { multiple % it == 0L }
-            }
     }
 }

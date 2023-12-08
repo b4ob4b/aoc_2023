@@ -59,3 +59,18 @@ fun <T> String.toGrid(separator: String = "", mapCell: ((String) -> T)): List<Li
 
 fun String.toPosition3D() = this.split(",").map { it.toInt() }
     .let { (x, y, z) -> Position3D(x, y, z) }
+
+fun <T> List<T>.toInfiniteSequence() = this.let { generateSequence(it) { it }.flatten() }
+
+fun List<Int>.gcd() = reduce { a, b ->
+    val lcm = listOf(a, b).lcm().toInt()
+    a * b / lcm
+}
+
+fun List<Int>.lcm(): Long {
+    val maxNumber = this.maxOrNull() ?: return -1
+    return generateSequence(maxNumber.toLong()) { it + maxNumber }
+        .first { multiple ->
+            this.all { multiple % it == 0L }
+        }
+}
