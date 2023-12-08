@@ -41,8 +41,7 @@ object IO {
     private fun createKtFile(day: Int, createInputFiles: Boolean) {
         val formattedDay = day.toString().padStart(2, '0')
         val text = """
-            import utils.Day
-            import utils.IO
+            import utils.*
             
             fun main() {
                 Day$formattedDay(IO.TYPE.SAMPLE).test()

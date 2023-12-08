@@ -10,17 +10,17 @@ data class Field<T>(val field: List<List<T>>) {
 
     constructor(x: Int, y: Int, element: () -> T) : this(List(x * y) { element.invoke() }.chunked(x))
 
-    val numberOfRows = field.size
-    val numberOfCols = field.first().size
+    val numberOfX = field.first().size
+    val numberOfY = field.size
 
-    val rowIndices = 0 until numberOfRows
-    val colIndices = 0 until numberOfCols
+    val xIndices = 0 until numberOfX
+    val yIndices = 0 until numberOfY
 
     operator fun get(position: Position) = field[position.y][position.x]
 
     fun search(element: T) = sequence {
-        (0 until numberOfRows).flatMap { y ->
-            (0 until numberOfCols).map { x ->
+        (0 until numberOfY).flatMap { y ->
+            (0 until numberOfX).map { x ->
                 if (field[y][x] == element) yield(Position(x, y))
             }
         }
