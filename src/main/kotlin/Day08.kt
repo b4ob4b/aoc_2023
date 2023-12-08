@@ -1,4 +1,7 @@
-import utils.*
+import utils.Day
+import utils.IO
+import utils.extractToList
+import utils.splitLines
 
 fun main() {
     Day08(IO.TYPE.SAMPLE).test(6)
@@ -17,14 +20,14 @@ class Day08(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("Haunted Wasteland", input
             from to (left to right)
         }
 
-    override fun part1() = navigateTheNetwork("AAA", "ZZZ").print()
+    override fun part1() = navigateTheNetwork("AAA", "ZZZ")
 
     override fun part2() = positionMap.keys
         .filter { it.endsWith("A") }
         .map { startingPoint ->
             navigateTheNetwork(startingPoint, "Z")
         }
-        .calculateCommonMultiple()
+        .findSmallestMultiple()
 
 
     private fun navigateTheNetwork(start: String, goal: String): Int {
@@ -39,14 +42,11 @@ class Day08(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("Haunted Wasteland", input
         }.count() + 1
     }
 
-    private fun List<Int>.calculateCommonMultiple(): Long {
+    private fun List<Int>.findSmallestMultiple(): Long {
         val maxNumber = this.maxOrNull() ?: return -1
-        var multiple = maxNumber.toLong()
-        while (true) {
-            if (this.all { multiple % it == 0L }) {
-                return multiple
+        return generateSequence(maxNumber.toLong()) { it + maxNumber }
+            .first { multiple ->
+                this.all { multiple % it == 0L }
             }
-            multiple += maxNumber
-        }
     }
 }
