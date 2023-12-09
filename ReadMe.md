@@ -10,3 +10,4 @@ Here you find my solutions written in Kotlin:
 * [Day 6: Scratchcards](src/main/kotlin/Day06.kt)
 * [Day 7: Camel Cards](src/main/kotlin/Day07.kt)
 * [Day 8: Haunted Wasteland](src/main/kotlin/Day08.kt)
+* [Day 9: Mirage Maintenance](src/main/kotlin/Day09.kt)
