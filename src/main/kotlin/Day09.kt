@@ -22,10 +22,6 @@ class Day09(inputType: IO.TYPE = IO.TYPE.INPUT) : Day("Mirage Maintenance", inpu
         return this.last() + futureValue
     }
 
-    private fun List<Int>.calculatePast(): Int {
-        if (this.all { it == 0 }) return 0
-        val pastValue = this.windowed(2).map { it[1] - it[0] }.calculatePast()
-        return this.first() - pastValue
-    }
+    private fun List<Int>.calculatePast() = this.reversed().calculateFuture()
 
 }
