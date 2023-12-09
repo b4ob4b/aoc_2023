@@ -12,11 +12,15 @@ internal class ConversionsTest {
 
     @Test
     fun gcd() {
+        listOf(18).gcd() shouldBe 18
+        listOf(42, 18).gcd() shouldBe 6
         listOf(42, 18, 54).gcd() shouldBe 6
     }
 
     @Test
     fun lcm() {
+        emptyList<Int>().lcm() shouldBe -1
+        listOf(12).lcm() shouldBe 12
         listOf(12, 21).lcm() shouldBe 84
     }
 
