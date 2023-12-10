@@ -11,3 +11,4 @@ Here you find my solutions written in Kotlin:
 * [Day 7: Camel Cards](src/main/kotlin/Day07.kt)
 * [Day 8: Haunted Wasteland](src/main/kotlin/Day08.kt)
 * [Day 9: Mirage Maintenance](src/main/kotlin/Day09.kt)
+* [Day 10: Pipe Maze](src/main/kotlin/Day10.kt)
