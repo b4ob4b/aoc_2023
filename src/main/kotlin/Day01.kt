@@ -1,6 +1,5 @@
 import utils.Day
 import utils.IO
-import utils.print
 import utils.splitLines
 
 fun main() {
